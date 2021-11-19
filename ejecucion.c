@@ -34,7 +34,7 @@ int ejecutar(CMD * ordenes, CMDFD *pipefd)
 	
 	// creacion en cadena de los procesos hijos
 	//	ej: "awk | grep | ls"
-	//	- 'ush'  crea el proceso 'awk'
+	//	- 'ssll'  crea el proceso 'awk'
 	//	- 'awk'  crea el proceso 'grep'
 	//	- 'grep' crea el proceso 'ls'
 	//

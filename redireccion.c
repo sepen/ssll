@@ -30,7 +30,7 @@ CMDFD * pipeline(CMD * ordenes)
 
    for (i=0; i<nproc-1; ++i){
       if (pipe(fds) == -1) {  /* crear un tubo */
-        fprintf(stderr, "ush: error al intentar crear un pipe\n");
+        fprintf(stderr, "ssll: error al intentar crear un pipe\n");
         return FALSE ;
       }
       cmdfd[i].outfd=fds[1];
