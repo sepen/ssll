@@ -7,8 +7,8 @@
  |     Descripcion:                                    |
  +-----------------------------------------------------*/
 #include "defines.h"
-#include "redireccion.h"
-#include "ejecucion.h"
+#include "redirect.h"
+#include "execute.h"
 #include <signal.h>
 
 struct sigaction act;
@@ -38,7 +38,7 @@ int ejecutar(CMD * ordenes, CMDFD *pipefd)
 	//	- 'awk'  crea el proceso 'grep'
 	//	- 'grep' crea el proceso 'ls'
 	//
-	// tratamiento de las redirecciones
+	// tratamiento de las redirectes
 	// 
 	// ejecutar la orden
 	
@@ -50,12 +50,12 @@ int ejecutar(CMD * ordenes, CMDFD *pipefd)
 		}
 		else {
 			// *********** HIJO ******************************
-			// redireccion de entrada
+			// redirect de entrada
 			if ((*pipefd)[i].infd != 0) {
 				close(0);
 				dup((*pipefd)[i].infd);
 			}
-			// redireccion de salida
+			// redirect de salida
 			if ((*pipefd)[i].outfd != 1) {
 				close(1);
 				dup((*pipefd)[i].outfd);

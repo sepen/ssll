@@ -2,18 +2,18 @@ CFLAGS = -D_INTERNAS -D_NO_INTERACTIVO
 
 all: ssll
 
-ssll: ssll.c defines.h analizador.h redireccion.h ejecucion.h analizador.o redireccion.o ejecucion.o
-	gcc $(CFLAGS) ssll.c analizador.o redireccion.o ejecucion.o -o ssll
+ssll: ssll.c defines.h parse.h redirect.h execute.h parse.o redirect.o execute.o
+	gcc $(CFLAGS) ssll.c parse.o redirect.o execute.o -o ssll
 	strip ssll
 
-analizador.o: analizador.c defines.h analizador.h
-		gcc -c $(CFLAGS) analizador.c
+parse.o: parse.c defines.h parse.h
+		gcc -c $(CFLAGS) parse.c
 
-redireccion.o: redireccion.c defines.h redireccion.h
-		gcc -c $(CFLAGS) redireccion.c
+redirect.o: redirect.c defines.h redirect.h
+		gcc -c $(CFLAGS) redirect.c
 
-ejecucion.o: ejecucion.c defines.h  ejecucion.h
-		gcc -c $(CFLAGS) ejecucion.c
+execute.o: execute.c defines.h  execute.h
+		gcc -c $(CFLAGS) execute.c
 
 clean:
-	rm -v *.o ssll ejecucion1 ejecucion2
+	rm -v *.o ssll execute1 execute2

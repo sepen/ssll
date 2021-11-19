@@ -8,7 +8,7 @@
  +-----------------------------------------------------*/
 
 #include "defines.h"
-#include "analizador.h"
+#include "parse.h"
 
 char line[MAXLINE+1];
 char * lineptr;
@@ -30,7 +30,7 @@ char *errstr[MAXERR] = {
 };
 
 
-void analizador_ini(void);
+void parse_ini(void);
 int command(int i);
 int check(char * ptr);
 void getname(char * name);
@@ -42,7 +42,7 @@ CMD * analizar (char * s)
    
    lineptr = s;
    
-   analizador_ini();
+   parse_ini();
 
    /*  1 */
    if ( cmdok=command(0) ) cmd.num_ordenes++;
@@ -88,7 +88,7 @@ CMD * analizar (char * s)
    return (NULL);
 }
 
-void analizador_ini(void)
+void parse_ini(void)
 {
   int i,j;
 

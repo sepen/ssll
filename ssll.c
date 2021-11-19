@@ -7,9 +7,9 @@
  |	Contacto   :  http://www.mikeux.tk              |
  +-----------------------------------------------------*/
 #include "defines.h"
-#include "analizador.h"
-#include "redireccion.h"
-#include "ejecucion.h"
+#include "parse.h"
+#include "redirect.h"
+#include "execute.h"
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
@@ -17,7 +17,7 @@
 // Declaracion de variables 
 char line[MAXLINE+1] = "\0";
 CMD * ordenes;			// necesario para obtener la linea
-CMDFD * pipefd;			// necesario para la redireccion
+CMDFD * pipefd;			// necesario para la redirect
 struct sigaction act;
 
 // Declaracion de funciones
@@ -79,9 +79,9 @@ void modo_externo(void) {
 				sigaction(SIGINT, &act, NULL);
 				sigaction(SIGQUIT, &act, NULL);
 			}
-			// redirecciones
+			// redirectes
 			pipefd=pipeline(ordenes);
-			// ejecucion
+			// execute
 			ejecutar(ordenes, pipefd);
 		}
 	}

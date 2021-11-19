@@ -4,17 +4,17 @@
  |     Version    :  2005	                       |
  |     Autor      :  Jose Vte Beneyto                  |
  |     Asignatura :  SO2                               |
- |     Descripcion:  modulo de redireccion             |
+ |     Descripcion:  modulo de redirect             |
  +-----------------------------------------------------*/
 #include "defines.h"
-#include "analizador.h"
-#include "redireccion.h"
+#include "parse.h"
+#include "redirect.h"
 
 CMDFD cmdfd;
 
 int nproc, mxfd;
 
-void redireccion_ini(void);
+void redirect_ini(void);
 int r_entrada(char *s);
 int r_salida(char *s, int append);
 
@@ -23,7 +23,7 @@ CMDFD * pipeline(CMD * ordenes)
 {
    int i, fds[2];
 
-   redireccion_ini(); 
+   redirect_ini(); 
    nproc=ordenes->num_ordenes;
    r_entrada(ordenes->fich_entrada);
    r_salida(ordenes->fich_salida, ordenes->es_append);
@@ -52,7 +52,7 @@ int cerrar_fd()
   return OK;
 }
 
-void redireccion_ini()
+void redirect_ini()
 {
   int i;
   for (i=0; i<PIPELINE; i++){
