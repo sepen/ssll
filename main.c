@@ -1,18 +1,12 @@
-/*------------------------------------------------------+
- |	U S H. C                                        |
- +------------------------------------------------------+
- |	Autor      :  Beneyto Ruiz, Jose Vicente        |
- |	Asignatura :  SO2                               |
- |	Descripcion:  Practica MicroShell               |
- |	Contacto   :  http://www.mikeux.tk              |
- +-----------------------------------------------------*/
-#include "defines.h"
+#include "main.h"
 #include "parse.h"
 #include "redirect.h"
 #include "execute.h"
 #include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 // Declaracion de variables 
 char line[MAXLINE+1] = "\0";
@@ -21,7 +15,8 @@ CMDFD * pipefd;			// necesario para la redirect
 struct sigaction act;
 
 // Declaracion de funciones
-char * getline();
+char * stdin_getline();
+
 //void visualizar_tmp( CMD * orden );	// funcion de uso temporal (practica2)
 void modo_externo(void);
 
@@ -53,7 +48,7 @@ int main(int argc, char * argv[])
 	else {
 		while (1) {
 			// LEER LINEA
-			linea = getline();
+			linea = stdin_getline();
 		
 			// ANALIZAR LINEA
 			if ((ordenes=analizar(linea)) != NULL) {
@@ -89,8 +84,8 @@ void modo_externo(void) {
 }
 
 
-// Funcion getline (retorno de stdin como cadena)
-char * getline(void)
+// Funcion stdin_getline (retorno de stdin como cadena)
+char * stdin_getline(void)
 {
 	int i;
 	

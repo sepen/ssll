@@ -1,14 +1,7 @@
-/*-----------------------------------------------------+      
- |     R E D I R E C C I O N . C                       |
- +-----------------------------------------------------+
- |     Version    :  2005	                       |
- |     Autor      :  Jose Vte Beneyto                  |
- |     Asignatura :  SO2                               |
- |     Descripcion:  modulo de redirect             |
- +-----------------------------------------------------*/
-#include "defines.h"
+#include "main.h"
 #include "parse.h"
 #include "redirect.h"
+#include <unistd.h>
 
 CMDFD cmdfd;
 

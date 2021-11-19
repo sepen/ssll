@@ -1,13 +1,4 @@
-/*-----------------------------------------------------+
- |     A N A L I Z A D O R . C                         |
- +-----------------------------------------------------+
- |     Version    :  4-Julio-2002                      |
- |     Autor      :  Joan Vila                         |
- |     Asignatura :  SO2                               |
- |     Descripcion:                                    |
- +-----------------------------------------------------*/
-
-#include "defines.h"
+#include "main.h"
 #include "parse.h"
 
 char line[MAXLINE+1];

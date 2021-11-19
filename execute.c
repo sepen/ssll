@@ -1,15 +1,10 @@
-/*-----------------------------------------------------+      
- |     E J E C U C I O N . C                           |
- +-----------------------------------------------------+
- |     Version    :  2005	                       |
- |     Autor      :  joberui			       |
- |     Asignatura :  SO2                               |
- |     Descripcion:                                    |
- +-----------------------------------------------------*/
-#include "defines.h"
+#include "main.h"
 #include "redirect.h"
 #include "execute.h"
+#include <unistd.h>
+#include <stdlib.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 struct sigaction act;
 
@@ -27,7 +22,7 @@ int ejecutar(CMD * ordenes, CMDFD *pipefd)
 	
 	// comprobar si se lanza en 
 	// 	-primer plano:	El shell tendra que ir esperando a que los procesos hijos vayan terminando, 
-	// 			hasta que lo haga el que aparecía como ultima orden de la linea. 
+	// 			hasta que lo haga el que aparecï¿½a como ultima orden de la linea. 
 	// 	-segundo plano: El shell no tiene por que esperar a que termine ninguno de los procesos creados.
 	// 			Ya puede presentar el prompt y leer la siguiente orden de inmediato.
 	//
@@ -81,7 +76,7 @@ int ejecutar(CMD * ordenes, CMDFD *pipefd)
 	// por si acaso cerrramos los descriptores sobrantes
 	cerrar_fd();
 	// esperamos la terminacion del ultimo hijo
-	// NOTA: podrian quedar zombies con lo que habria que añadir
+	// NOTA: podrian quedar zombies con lo que habria que aï¿½adir
 	// 	 algun mecanismo para evitarlo
 	wait(NULL)!=lastpid;
 	return TRUE;      
