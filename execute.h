@@ -18,7 +18,7 @@
 /* "pipefd" de la tuberia                                          */
 /* SALIDA: OK o ERROR                                              */ 
 /*******************************************************************/
-extern int ejecutar (CMD * ordenes, CMDFD * pipefd);
+extern int ejecutar (CMD * ordenes, CMD_FD * pipefd);
 
 #endif
 

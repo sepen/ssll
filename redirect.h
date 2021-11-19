@@ -15,10 +15,10 @@
 /*---------------------------------------------------------------------*/
 /* Crea los tubos necesarios (n-1) para ejecutar n ordenes en tuberia  */
 /* ENTRADA: una orden analizada (estructura CMD)                       */
-/* SALIDA: estruct. CMDFD con los desc. fd de cada orden de la tuberia */
+/* SALIDA: estruct. CMD_FD con los desc. fd de cada orden de la tuberia */
 /*                                                                     */
 /***********************************************************************/
-extern CMDFD * pipeline(CMD * ordenes);
+extern CMD_FD * pipeline(CMD * ordenes);
 
 /***********************************************************************/
 /*                       cerrar_fd                                     */

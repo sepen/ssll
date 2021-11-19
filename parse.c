@@ -1,9 +1,9 @@
 #include "main.h"
 #include "parse.h"
 
-char line[MAXLINE+1];
+char line[MAX_LINE+1];
 char * lineptr;
-char avline[MAXLINE+1];
+char avline[MAX_LINE+1];
 char * avptr =avline ;
 
 CMD cmd;
@@ -36,32 +36,32 @@ CMD * analizar (char * s)
    parse_ini();
 
    /*  1 */
-   if ( cmdok=command(0) ) cmd.num_ordenes++;
+   if ( cmdok=command(0) ) cmd.cmd_count++;
    
    if (cmdok) {
      /* 2 */
-     if (check("<")) getname(cmd.fich_entrada);
+     if (check("<")) getname(cmd.file_in);
     
      /* 3 */
-     while ( check("|") && cmd.num_ordenes<PIPELINE && cmdok){ 
-          if(cmdok = command(cmd.num_ordenes)) cmd.num_ordenes++;
+     while ( check("|") && cmd.cmd_count<PIPELINE && cmdok){ 
+          if(cmdok = command(cmd.cmd_count)) cmd.cmd_count++;
      }
    }
   
    if (cmdok){
      /* 4 */
      if (check(">")) {
-       if (check(">")) cmd.es_append = TRUE;
-       getname(cmd.fich_salida);
+       if (check(">")) cmd.flag_append = TRUE;
+       getname(cmd.file_out);
      }
      
      /* 5 */
-     if (check("&"))  cmd.es_background = TRUE;
+     if (check("&"))  cmd.flag_background = TRUE;
    
      /* 6 */
      if (check("\n")) return(&cmd);
    }
-   if (cmd.num_ordenes==0) return (&cmd);
+   if (cmd.cmd_count==0) return (&cmd);
  
    fprintf(stderr,PROMPT);
    charok=lineptr-line;
@@ -74,7 +74,7 @@ CMD * analizar (char * s)
    else if (check(">")) errnum=4;
    else if (check("&")) errnum=5;
    else errnum=6;
-   fprintf(stderr, "Error de sintaxis en orden: %s.", cmd.argumentos[cmd.num_ordenes-1][0]);
+   fprintf(stderr, "Error de sintaxis en orden: %s.", cmd.args[cmd.cmd_count-1][0]);
    fprintf(stderr, " %s\n", errstr[errnum]);
    return (NULL);
 }
@@ -86,13 +86,13 @@ void parse_ini(void)
    avptr=avline;
    
    for(i=0; i<PIPELINE; i++) 
-       for(j=0; j<MAXARG; j++) cmd.argumentos[i][j]=NULL;
-   cmd.num_ordenes=0;
-   for(i=0; i<PIPELINE; i++) cmd.num_argumentos[i]=0;
-   cmd.fich_entrada[0]='\0';
-   cmd.fich_salida[0]='\0';
-   cmd.es_background = FALSE;
-   cmd.es_append = FALSE;
+       for(j=0; j<MAX_ARG; j++) cmd.args[i][j]=NULL;
+   cmd.cmd_count=0;
+   for(i=0; i<PIPELINE; i++) cmd.args_counts[i]=0;
+   cmd.file_in[0]='\0';
+   cmd.file_out[0]='\0';
+   cmd.flag_background = FALSE;
+   cmd.flag_append = FALSE;
    
    errnum=0;
 }
@@ -102,12 +102,12 @@ int command(int i)
 {
   int j, flag, inword=FALSE, incmd=FALSE;
   
-  cmd.num_argumentos[i]=0;
-  for(j=0; j<MAXARG-1; ++j) {
+  cmd.args_counts[i]=0;
+  for(j=0; j<MAX_ARG-1; ++j) {
       while(*lineptr==' ' || *lineptr=='\t')  ++lineptr;
       
-      cmd.argumentos[i][j] = avptr;
-      cmd.argumentos[i][j+1] = NULL;
+      cmd.args[i][j] = avptr;
+      cmd.args[i][j+1] = NULL;
 
       for(flag=0; flag==0;) {
          switch(*lineptr) {
@@ -116,7 +116,7 @@ int command(int i)
          case '|':
          case '&':
          case '\n':
-	        if (inword==FALSE) cmd.argumentos[i][j]= NULL;
+	        if (inword==FALSE) cmd.args[i][j]= NULL;
                 *avptr++ = '\0';
                 return incmd;
          case ' ':
@@ -131,7 +131,7 @@ int command(int i)
                *avptr++ = *lineptr++;
                break;
        }
-       cmd.num_argumentos[i] = j+1;
+       cmd.args_counts[i] = j+1;
      }       
   }
   return incmd;
@@ -161,7 +161,7 @@ void getname(char * name)
    int i;
    
    while (*lineptr==' ') lineptr++;
-   for (i=0; i<MAXNAME; ++i) {
+   for (i=0; i<MAX_NAME; ++i) {
        switch (*lineptr) {
         case ' ':
         case '>':
@@ -189,20 +189,20 @@ void visualizar(CMD *orden)
 {  
   int i,j,n,m;
       
-  n=orden->num_ordenes;
+  n=orden->cmd_count;
   fprintf(stdout, "   # ordenes: %d \n",  n);
 
   for (i=0; i<n;i++){
-	 m=orden->num_argumentos[i];
+	 m=orden->args_counts[i];
      fprintf(stdout, "\n   nargs[%d]: %d \n", i, m);
      for (j=0; j<m; j++){ 
-         fprintf(stdout, "   args[%d,%d]: %s \n", i, j,orden->argumentos[i][j]);
+         fprintf(stdout, "   args[%d,%d]: %s \n", i, j,orden->args[i][j]);
 	 }
   }
-  fprintf(stdout, "\n   infile: %s \n",  orden->fich_entrada);
-  fprintf(stdout, "   outfile: %s \n",  orden->fich_salida);
-  fprintf(stdout, "   append: %d \n", orden->es_append);
-  fprintf(stdout, "   bgnd: %d \n",  orden->es_background);
+  fprintf(stdout, "\n   infile: %s \n",  orden->file_in);
+  fprintf(stdout, "   outfile: %s \n",  orden->file_out);
+  fprintf(stdout, "   append: %d \n", orden->flag_append);
+  fprintf(stdout, "   bgnd: %d \n",  orden->flag_background);
   fflush(stdout);
 }
 

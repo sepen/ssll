@@ -34,7 +34,7 @@ extern char *error_sintactico ();
 /****************************************************************/
 /*                       visualizar                             */
 /*--------------------------------------------------------------*/
-/* Visualiza los distintos argumentos de la orden analizada     */
+/* Visualiza los distintos args de la orden analizada     */
 /* Util para depuracion                                         */
 /****************************************************************/
 extern void visualizar (CMD *orden);

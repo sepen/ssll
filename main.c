@@ -9,9 +9,9 @@
 #include <sys/wait.h>
 
 // Declaracion de variables 
-char line[MAXLINE+1] = "\0";
+char line[MAX_LINE+1] = "\0";
 CMD * ordenes;			// necesario para obtener la linea
-CMDFD * pipefd;			// necesario para la redirect
+CMD_FD * pipefd;			// necesario para la redirect
 struct sigaction act;
 
 // Declaracion de funciones
@@ -33,7 +33,7 @@ int main(int argc, char * argv[])
 	sigaction(SIGTTIN, &act, NULL);  /* proceso background intentando escribir */
 	
 	// Bienvenida
-	printf(LOGO);
+	printf(MSG_WELCOME);
 	
 	// **posibilidad**
 	// Comandos externos
@@ -65,11 +65,11 @@ void modo_externo(void) {
 	int i,pid;
 	if ((ordenes=analizar(line)) != NULL) {
 		if ( (pid= fork()) != 0) {  // padre
-			if (!ordenes->es_background)
+			if (!ordenes->flag_background)
 				while ((wait(NULL) != pid));
 		} 
 		else {  // hijo
-			if (!ordenes->es_background){
+			if (!ordenes->flag_background){
 				act.sa_handler = SIG_IGN;
 				sigaction(SIGINT, &act, NULL);
 				sigaction(SIGQUIT, &act, NULL);
@@ -92,14 +92,14 @@ char * stdin_getline(void)
 	// Mostrar el prompt
 	printf(PROMPT);
 	
-	for (i=0; (line[i] = getchar()) != '\n' && line[i] != EOF && i<MAXLINE; ++i);
+	for (i=0; (line[i] = getchar()) != '\n' && line[i] != EOF && i<MAX_LINE; ++i);
 	
 	if (line[i] == EOF ) {
 		fprintf(stderr, "\n\033[1;34mHasta luego!!\033[0m\n");       
 		clearerr(stdin);
 		exit(0);
 	}
-        if (i==MAXLINE) {
+        if (i==MAX_LINE) {
 		fprintf(stderr, "\nLinea de orden demasiado larga!!\n");
 		i=-1;
 	}
@@ -111,18 +111,18 @@ char * stdin_getline(void)
 /*void visualizar_tmp( CMD * orden )
 {
 	int i,j,n,m;
-	n = orden->num_ordenes;
+	n = orden->cmd_count;
 	fprintf(stdout, "\nNº Ordenes= %d \n",  n);
 	for (i=0; i<n;i++){
-		m = orden->num_argumentos[i];
+		m = orden->args_counts[i];
 		fprintf(stdout, "\n--------------------\n   narg[%d]: %d \n", i, m);
 		for (j=0; j<m; j++){
-			fprintf(stdout, "   arg[%d,%d]: %s \n", i, j, orden->argumentos[i][j]);
+			fprintf(stdout, "   arg[%d,%d]: %s \n", i, j, orden->args[i][j]);
 		}
 	}
-	fprintf(stdout, "\n   infile: %s \n",  orden->fich_entrada);
-	fprintf(stdout, "   outfile: %s \n",  orden->fich_salida);
-	fprintf(stdout, "   append: %d \n", ordenes->es_append);
-	fprintf(stdout, "   bgnd: %d \n\n",  ordenes->es_background);
+	fprintf(stdout, "\n   infile: %s \n",  orden->file_in);
+	fprintf(stdout, "   outfile: %s \n",  orden->file_out);
+	fprintf(stdout, "   append: %d \n", ordenes->flag_append);
+	fprintf(stdout, "   bgnd: %d \n\n",  ordenes->flag_background);
 	fflush(stdout);
 }*/

@@ -8,12 +8,12 @@
 
 struct sigaction act;
 
-int ejecutar(CMD * ordenes, CMDFD *pipefd)
+int ejecutar(CMD * ordenes, CMD_FD *pipefd)
 {
 	int i, lastpid;
 	
 	// senyales
-	if (ordenes->es_background)
+	if (ordenes->flag_background)
 		act.sa_handler = SIG_IGN;
 	else
 		act.sa_handler = SIG_DFL;
@@ -37,37 +37,37 @@ int ejecutar(CMD * ordenes, CMDFD *pipefd)
 	// 
 	// ejecutar la orden
 	
-	for (i=0; i<(ordenes->num_ordenes); ++i){
+	for (i=0; i<(ordenes->cmd_count); ++i){
 		if (lastpid = fork()) {
 			// *********** PADRE *****************************
 			// para cada hijo (orden a ejecutar)
-			if (ordenes->es_background) fprintf(stdout, "[%d]\n", lastpid);
+			if (ordenes->flag_background) fprintf(stdout, "[%d]\n", lastpid);
 		}
 		else {
 			// *********** HIJO ******************************
 			// redirect de entrada
-			if ((*pipefd)[i].infd != 0) {
+			if ((*pipefd)[i].fd_in != 0) {
 				close(0);
-				dup((*pipefd)[i].infd);
+				dup((*pipefd)[i].fd_in);
 			}
 			// redirect de salida
-			if ((*pipefd)[i].outfd != 1) {
+			if ((*pipefd)[i].fd_out != 1) {
 				close(1);
-				dup((*pipefd)[i].outfd);
+				dup((*pipefd)[i].fd_out);
 			}
 			// por si acaso cerrramos los descriptores sobrantes
 			cerrar_fd();
 			
 			// background
-			if (!ordenes->es_background) {
+			if (!ordenes->flag_background) {
 			        act.sa_handler = SIG_DFL;
 				sigaction(SIGINT, &act, NULL);
 				sigaction(SIGQUIT, &act, NULL);
 			}
 						
 			// ejecutamos la orden
-			if (execvp(ordenes->argumentos[i][0], ordenes->argumentos[i]) == -1) {
-				fprintf(stderr, "%s no encontrado o no ejecutable\n", ordenes->argumentos[i][0]);
+			if (execvp(ordenes->args[i][0], ordenes->args[i]) == -1) {
+				fprintf(stderr, "%s: command not found\n", ordenes->args[i][0]);
 				exit(1);
 			}
 		}
