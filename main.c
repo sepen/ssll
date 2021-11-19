@@ -95,11 +95,11 @@ char * stdin_getline(void)
 	for (i=0; (line[i] = getchar()) != '\n' && line[i] != EOF && i<MAX_LINE; ++i);
 	
 	if (line[i] == EOF ) {
-		fprintf(stderr, "\n\033[1;34mHasta luego!!\033[0m\n");       
+		//fprintf(stderr, "\n\033[1;34mBye!\033[0m\n");
 		clearerr(stdin);
 		exit(0);
 	}
-        if (i==MAX_LINE) {
+  if (i==MAX_LINE) {
 		fprintf(stderr, "\nLinea de orden demasiado larga!!\n");
 		i=-1;
 	}
@@ -112,7 +112,7 @@ char * stdin_getline(void)
 {
 	int i,j,n,m;
 	n = orden->cmd_count;
-	fprintf(stdout, "\nNº Ordenes= %d \n",  n);
+	fprintf(stdout, "\nCommand count= %d \n",  n);
 	for (i=0; i<n;i++){
 		m = orden->args_counts[i];
 		fprintf(stdout, "\n--------------------\n   narg[%d]: %d \n", i, m);
@@ -120,9 +120,9 @@ char * stdin_getline(void)
 			fprintf(stdout, "   arg[%d,%d]: %s \n", i, j, orden->args[i][j]);
 		}
 	}
-	fprintf(stdout, "\n   infile: %s \n",  orden->file_in);
-	fprintf(stdout, "   outfile: %s \n",  orden->file_out);
-	fprintf(stdout, "   append: %d \n", ordenes->flag_append);
-	fprintf(stdout, "   bgnd: %d \n\n",  ordenes->flag_background);
+	fprintf(stdout, "file_in: %s \n",  orden->file_in);
+	fprintf(stdout, "file_out: %s \n",  orden->file_out);
+	fprintf(stdout, "flag_append: %d \n", ordenes->flag_append);
+	fprintf(stdout, "flag_background: %d \n",  ordenes->flag_background);
 	fflush(stdout);
 }*/
