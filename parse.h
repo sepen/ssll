@@ -1,34 +1,19 @@
-/*-----------------------------------------------------+
- |     A N A L I Z A D O R . H                         |
- +-----------------------------------------------------+
- |     Version    :  4-Julio-2002                      |
- |     Autor      :                           |
- |     Asignatura :  SO2                               |
- |     Descripcion:                                    |
- +-----------------------------------------------------*/
+#ifndef PARSE_H
+#define PARSE_H
 
-#ifndef ANALIZADOR_H
-#define ANALIZADOR_H
+/* parse syntax
+ *
+ * cmd [ < filename ] [ | cmd ]... [ (> OR >>) filename ] [ & ]
+ *
+ * Parse a command according to the syntax specified above
+ *  INPUT: a string with a command to the shell
+ *  OUTPUT: the parsed structure CMDARG
+ *          Returns NULL if the command syntax is incorrect
+ *          On error, invoking syntactic_error () get a description of
+ *          the error
+ */
 
-/****************************************************************/
-/*                      SINTAXIS                                */
-/*--------------------------------------------------------------*/
-/*                                                              */
-/* cmd [ < filename ] [ | cmd ]... [ (> OR >>) filename ] [ & ] */
-/*                                                              */
-/****************************************************************/
-
-/****************************************************************/
-/*                        analizar                              */
-/*--------------------------------------------------------------*/
-/* Analiza una orden segun la sintaxis arriba especificada      */
-/* ENTRADA: una cadena con una orden para el shell              */
-/* SALIDA: la estructura analizada CMDARG                       */
-/*         Retorna  NULL si la sintaxis de laorden es incorrecta*/
-/*         En caso de error, invocando error_sintactico()       */
-/*         se obtiene una descripción del error.                */
-/****************************************************************/
-extern CMD *  analizar (char *s);
+extern CMD * parse (char *s);
 extern char *error_sintactico ();
 
 /****************************************************************/

@@ -1,25 +1,26 @@
 #include "main.h"
 #include "parse.h"
 
-char line[MAX_LINE+1];
+char line[MAX_LINE + 1];
+char avline[MAX_LINE + 1];
+
 char * lineptr;
-char avline[MAX_LINE+1];
-char * avptr =avline ;
+char * avptr = avline ;
 
 CMD cmd;
 
-#define MAXERR 7
+#define MAX_ERR 7
 int errnum = 0;
-char *errstr[MAXERR] = {
-   "Sintaxis correcta",
-   "Se esperaba una orden",
-   "Redireccion de entrada inesperada",
-   "Pipeline inesperado", 
-   "Redireccion de salida inesperada",  
-   "Background inesperado",
-   "Orden inesperada"  
-};
 
+char *errstr[MAX_ERR] = {
+   "Syntax is ok",
+   "An order was expected",
+   "Unexpected input redirection",
+   "Unexpected pipeline",
+   "Unexpected exit redirection",
+   "Unexpected background",
+   "Unexpected order"
+};
 
 void parse_ini(void);
 int command(int i);
@@ -27,7 +28,7 @@ int check(char * ptr);
 void getname(char * name);
 
 
-CMD * analizar (char * s) 
+CMD * parse (char * s) 
 {
    int i, charok, cmdok;
    
@@ -66,7 +67,7 @@ CMD * analizar (char * s)
    fprintf(stderr,PROMPT);
    charok=lineptr-line;
    for(i=0; i<charok; i++) fprintf(stderr," ");
-   fprintf(stderr,"^ inesperado.\n");
+   fprintf(stderr,"^ unexpected.\n");
         
    if (!cmdok)          errnum=1;
    else if (check("<")) errnum=2;
@@ -74,7 +75,7 @@ CMD * analizar (char * s)
    else if (check(">")) errnum=4;
    else if (check("&")) errnum=5;
    else errnum=6;
-   fprintf(stderr, "Error de sintaxis en orden: %s.", cmd.args[cmd.cmd_count-1][0]);
+   fprintf(stderr, "Syntax error running this command: %s.", cmd.args[cmd.cmd_count-1][0]);
    fprintf(stderr, " %s\n", errstr[errnum]);
    return (NULL);
 }
@@ -188,22 +189,20 @@ char *error_sintactico ()
 void visualizar(CMD *orden)
 {  
   int i,j,n,m;
-      
-  n=orden->cmd_count;
-  fprintf(stdout, "   # ordenes: %d \n",  n);
 
-  for (i=0; i<n;i++){
-	 m=orden->args_counts[i];
-     fprintf(stdout, "\n   nargs[%d]: %d \n", i, m);
+  n = orden->cmd_count;
+  fprintf(stdout, "   # ordenes: %d \n", n);
+
+  for (i=0; i<n; i++){
+	 m = orden->args_counts[i];
+     fprintf(stdout, "\n nargs[%d]: %d \n", i, m);
      for (j=0; j<m; j++){ 
-         fprintf(stdout, "   args[%d,%d]: %s \n", i, j,orden->args[i][j]);
+         fprintf(stdout, " args[%d,%d]: %s \n", i, j, orden->args[i][j]);
 	 }
   }
-  fprintf(stdout, "\n   infile: %s \n",  orden->file_in);
-  fprintf(stdout, "   outfile: %s \n",  orden->file_out);
-  fprintf(stdout, "   append: %d \n", orden->flag_append);
-  fprintf(stdout, "   bgnd: %d \n",  orden->flag_background);
+  fprintf(stdout, "file_in: %s \n",  orden->file_in);
+	fprintf(stdout, "file_out: %s \n",  orden->file_out);
+	fprintf(stdout, "flag_append: %d \n", orden->flag_append);
+	fprintf(stdout, "flag_background: %d \n",  orden->flag_background);
   fflush(stdout);
 }
-
-

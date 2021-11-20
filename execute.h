@@ -1,24 +1,15 @@
-/*-----------------------------------------------------+
- |     E J E C U C I O N . H                           |
- +-----------------------------------------------------+
- |     Version    :  4-Julio-2002                      |
- |     Autor      :                                    |
- |     Asignatura :  SO2                               |
- |     Descripcion:                                    |
- +-----------------------------------------------------*/
-#ifndef EJECUCION_H
-#define EJECUCION_H
+#ifndef EXECUTE_H
+#define EXECUTE_H
 
-/*******************************************************************/
-/*                        ejecutar                                 */
-/*-----------------------------------------------------------------*/
-/* Crea los procesos para ejecutar "ordenes" en tuberia y redirige */
-/* la STD_INPUT y STD_OUTPUT de un proceso hacia/desde "pipefd"    */          
-/* ENTRADA: una orden analizada "ordenes" y los descriptores       */
-/* "pipefd" de la tuberia                                          */
-/* SALIDA: OK o ERROR                                              */ 
-/*******************************************************************/
-extern int ejecutar (CMD * ordenes, CMD_FD * pipefd);
+/* execute
+ * 
+ * Create the processes to execute "commands" in pipeline and redirect
+ * the STD_INPUT and STD_OUTPUT of a process to / from "pipefd"
+ * INPUT: a parsed command "orders" and descriptors
+ * "pipefd" of the pipe
+ * OUTPUT: OK or ERROR
+ */
+extern int execute (CMD * ordenes, CMD_FD * pipefd);
 
 #endif
 

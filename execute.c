@@ -8,7 +8,7 @@
 
 struct sigaction act;
 
-int ejecutar(CMD * ordenes, CMD_FD *pipefd)
+int execute(CMD * ordenes, CMD_FD *pipefd)
 {
 	int i, lastpid;
 	
@@ -35,12 +35,12 @@ int ejecutar(CMD * ordenes, CMD_FD *pipefd)
 	//
 	// tratamiento de las redirectes
 	// 
-	// ejecutar la orden
+	// execute la orden
 	
 	for (i=0; i<(ordenes->cmd_count); ++i){
 		if (lastpid = fork()) {
 			// *********** PADRE *****************************
-			// para cada hijo (orden a ejecutar)
+			// para cada hijo (orden a execute)
 			if (ordenes->flag_background) fprintf(stdout, "[%d]\n", lastpid);
 		}
 		else {
