@@ -38,7 +38,7 @@ int execute(CMD * ordenes, CMD_FD *pipefd)
 	// execute la orden
 	
 	for (i=0; i<(ordenes->cmd_count); ++i){
-		if (lastpid = fork()) {
+		if ( (lastpid = fork()) ) {
 			// *********** PADRE *****************************
 			// para cada hijo (orden a execute)
 			if (ordenes->flag_background) fprintf(stdout, "[%d]\n", lastpid);
@@ -76,8 +76,9 @@ int execute(CMD * ordenes, CMD_FD *pipefd)
 	// por si acaso cerrramos los descriptores sobrantes
 	cerrar_fd();
 	// esperamos la terminacion del ultimo hijo
-	// NOTA: podrian quedar zombies con lo que habria que a�adir
+	// NOTA: podrian quedar zombies con lo que habria que añadir
 	// 	 algun mecanismo para evitarlo
-	wait(NULL)!=lastpid;
+	//wait(NULL) != lastpid;
+	wait(NULL);
 	return TRUE;      
 }

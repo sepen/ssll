@@ -23,12 +23,12 @@ char *errstr[MAX_ERR] = {
 };
 
 void parse_ini(void);
-int command(int i);
-int check(char * ptr);
-void getname(char * name);
+int command_line(int i);
+int check(char *ptr);
+void getname(char *name);
 
 
-CMD * parse (char * s) 
+CMD *parse (char *s)
 {
    int i, charok, cmdok;
    
@@ -37,7 +37,7 @@ CMD * parse (char * s)
    parse_ini();
 
    /*  1 */
-   if ( cmdok=command(0) ) cmd.cmd_count++;
+   if ( (cmdok = command_line(0)) ) cmd.cmd_count++;
    
    if (cmdok) {
      /* 2 */
@@ -45,7 +45,7 @@ CMD * parse (char * s)
     
      /* 3 */
      while ( check("|") && cmd.cmd_count<PIPELINE && cmdok){ 
-          if(cmdok = command(cmd.cmd_count)) cmd.cmd_count++;
+          if( (cmdok = command_line(cmd.cmd_count)) ) cmd.cmd_count++;
      }
    }
   
@@ -69,13 +69,13 @@ CMD * parse (char * s)
    for(i=0; i<charok; i++) fprintf(stderr," ");
    fprintf(stderr,"^ unexpected.\n");
         
-   if (!cmdok)          errnum=1;
-   else if (check("<")) errnum=2;
-   else if (check("|")) errnum=3;
-   else if (check(">")) errnum=4;
-   else if (check("&")) errnum=5;
-   else errnum=6;
-   fprintf(stderr, "Syntax error running this command: %s.", cmd.args[cmd.cmd_count-1][0]);
+   if (!cmdok) errnum = 1;
+   else if (check("<")) errnum = 2;
+   else if (check("|")) errnum = 3;
+   else if (check(">")) errnum = 4;
+   else if (check("&")) errnum = 5;
+   else errnum = 6;
+   fprintf(stderr, "Syntax error running this command_line: %s.", cmd.args[cmd.cmd_count-1][0]);
    fprintf(stderr, " %s\n", errstr[errnum]);
    return (NULL);
 }
@@ -99,7 +99,7 @@ void parse_ini(void)
 }
 
 
-int command(int i) 
+int command_line(int i)
 {
   int j, flag, inword=FALSE, incmd=FALSE;
   
@@ -181,12 +181,12 @@ void getname(char * name)
    }
 }
 
-char *error_sintactico ()
+char *syntax_error ()
 {
   return errstr[errnum];
 }
 
-void visualizar(CMD *orden)
+void visualize(CMD *orden)
 {  
   int i,j,n,m;
 

@@ -12,17 +12,44 @@
 // '\0' to denote the terminating null character in a character array
 char line[MAX_LINE+1] = "\0";
 
-// required to get the command line
-CMD * ordenes;
+// required to get the command
+CMD * command;
 
 // required to get the redirection
-CMD_FD * pipefd;
+CMD_FD *pipe_fd;
 
 // required to handle signals
 struct sigaction act;
 
+// function to execute external command
+void external_command(void)
+{
+	int pid;
+
+	if ((command = parse(line)) != NULL) {
+		if ((pid = fork()) != 0) {
+		    // parent
+			if (!command->flag_background)
+				while ((wait(NULL) != pid));
+		}
+		else {
+		    // child
+			if (!command->flag_background){
+				act.sa_handler = SIG_IGN;
+				sigaction(SIGINT, &act, NULL);
+				sigaction(SIGQUIT, &act, NULL);
+			}
+			// handle redirections
+			pipe_fd = pipeline(command);
+			// execute
+			execute(command, pipe_fd);
+		}
+	}
+	exit(0);
+}
+
 // function to get the standard input
-char * stdin_getline(void)
+char * get_newline(void)
 {
 	int i;
 	
@@ -44,66 +71,46 @@ char * stdin_getline(void)
 	return(line);
 }
 
-void modo_externo(void)
-{
-	int i,pid;
-
-	if ((ordenes=parse(line)) != NULL) {
-		if ( (pid= fork()) != 0) {  // padre
-			if (!ordenes->flag_background)
-				while ((wait(NULL) != pid));
-		} 
-		else {  // hijo
-			if (!ordenes->flag_background){
-				act.sa_handler = SIG_IGN;
-				sigaction(SIGINT, &act, NULL);
-				sigaction(SIGQUIT, &act, NULL);
-			}
-			// redirectes
-			pipefd=pipeline(ordenes);
-			// execute
-			execute(ordenes, pipefd);
-		}
-	}
-	exit(0);
-}
-
 // main function
+//
+// reads from external input or loop for each newline from user
 int main(int argc, char * argv[])
 {
-	int i; //, pid; //, modo;
-	char * linea;
+	int i; //, pid, modo;
+	char * newline;
 
 	act.sa_handler = SIG_IGN;
-	sigaction(SIGINT, &act, NULL);   /* senyal interrupcion del teclado CTRL-C */
-	sigaction(SIGQUIT, &act, NULL);  /* senyal terminacion del teclado CTRL-\*/
-	sigaction(SIGTTOU, &act, NULL);  /* proceso background intentando leer */
-	sigaction(SIGTTIN, &act, NULL);  /* proceso background intentando escribir */
+	sigaction(SIGINT, &act, NULL);   /* CTRL-C */
+	sigaction(SIGQUIT, &act, NULL);  /* CTRL-D */
+	sigaction(SIGTTOU, &act, NULL);  /* background process trying to read */
+	sigaction(SIGTTIN, &act, NULL);  /* background process trying to write */
 	
-	// Bienvenida
+	// Welcome message
 	printf(MSG_WELCOME);
-	
-	// **posibilidad**
-	// Comandos externos
+
+	// Read from external arguments and execute the command
+	// Example: ssll -c uptime
 	if ((argc>1) && (!strcmp(argv[1],"-c"))) {
 		for(i=2; i<argc; i++) {
 			strcat(line, argv[i]);
 			strcat(line, " ");
 		}
 		strcat(line, "\n");
-		modo_externo();
+		external_command();
 	}
+	// Interactive mode
+	// Give a prompt, parse each newline from user and execute the command
 	else {
 		while (1) {
-			// LEER LINEA
-			linea = stdin_getline();
+			// read newline from user
+			newline = get_newline();
 		
-			// ANALIZAR LINEA
-			if ((ordenes = parse(linea)) != NULL) {
-				// LLAMAR A POSIBLES REDIRECCIONES
-				pipefd = pipeline(ordenes);
-				// EJECUTAR LAS ORDENES
-				execute(ordenes, pipefd);
+			// parse the line
+			if ((command = parse(newline)) != NULL) {
+				// get file descriptors for possible redirection
+				pipe_fd = pipeline(command);
+				// execute the command with file descriptors from above
+				execute(command, pipe_fd);
 			}	
 		}
 		return 0;
