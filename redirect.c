@@ -60,19 +60,22 @@ int r_entrada(char *s)
 {
   int fd;
 
-  if (s != "\0")
-     if ((fd = open(s, O_RDONLY)) == -1) return(-errno);
-     else cmdfd[0].fd_in = fd;
+  if ( !strcmp(s, "\0") ) {
+    if ( (fd = open(s, O_RDONLY)) == -1) {
+        return(-errno);
+    }
+    else {
+        cmdfd[0].fd_in = fd;
+    }
+  }
   return(OK);
-} /* r_entrada */
-
-
+}
 int r_salida(char *s, int append)
 {
   int fd;
 
-  if (s != "\0"){
-    if (append){ 
+  if ( !strcmp(s, "\0") ) {
+    if ( append ) {
        if((fd = open(s, O_WRONLY | O_CREAT | O_APPEND, 0666)) == -1) return(-errno);
     } else {  
        if((fd = open(s, O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1) return(-errno);
@@ -81,4 +84,4 @@ int r_salida(char *s, int append)
     return(OK);
   }
   return(ERROR);
- } /* r_salida */
+ }
