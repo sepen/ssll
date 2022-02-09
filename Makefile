@@ -1,10 +1,10 @@
-#CFLAGS = -O2
-CFLAGS = -Wall
+
+CFLAGS = -Wall -O2
 
 CC=gcc
 STRIP=strip
 
-all: ssll
+all: clean ssll
 
 ssll: main.c main.h parse.h redirect.h execute.h parse.o redirect.o execute.o
 	$(CC) $(CFLAGS) main.c parse.o redirect.o execute.o -o ssll
