@@ -11,33 +11,32 @@ void redirect_ini(void);
 int r_entrada(char *s);
 int r_salida(char *s, int append);
 
-
-CMD_FD * pipeline(CMD * ordenes)
+CMD_FD * pipeline(CMD * cmd)
 {
-   int i, fds[2];
+    int i, fds[2];
 
-   redirect_ini(); 
-   nproc=ordenes->cmd_count;
-   r_entrada(ordenes->file_in);
-   r_salida(ordenes->file_out, ordenes->flag_append);
+    redirect_ini();
+    nproc=cmd->cmd_count;
+    r_entrada(cmd->file_in);
+    r_salida(cmd->file_out, cmd->flag_append);
 
-   for (i=0; i<nproc-1; ++i){
-      if (pipe(fds) == -1) {  /* crear un tubo */
-        fprintf(stderr, "ssll: error al intentar crear un pipe\n");
-        return FALSE ;
-      }
-      cmdfd[i].fd_out=fds[1];
-      cmdfd[i+1].fd_in=fds[0];
-      mxfd=max(mxfd,fds[1]);
+    for (i=0; i<nproc-1; ++i){
+
+        if (pipe(fds) == -1) {  /* crear un tubo */
+            fprintf(stderr, "ssll: error al intentar crear un pipe\n");
+            return FALSE ;
+        }
+        cmdfd[i].fd_out=fds[1];
+        cmdfd[i+1].fd_in=fds[0];
+        mxfd=max(mxfd,fds[1]);
    }
    
-   if (cmdfd[0].fd_in==0 && ordenes->flag_background)
-          cmdfd[0].fd_in = open ("/dev/null", O_RDONLY); 
-   return &cmdfd;
+    if (cmdfd[0].fd_in==0 && cmd->flag_background)
+        cmdfd[0].fd_in = open ("/dev/null", O_RDONLY);
+    return &cmdfd;
+}
 
-} /* pipeline */
-
-int cerrar_fd()
+int close_fd()
 {
   int i;
 
@@ -70,6 +69,7 @@ int r_entrada(char *s)
   }
   return(OK);
 }
+
 int r_salida(char *s, int append)
 {
   int fd;
