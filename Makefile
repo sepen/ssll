@@ -7,7 +7,7 @@ STRIP=strip
 all: clean ssll
 
 ssll: main.c main.h parse.h redirect.h execute.h parse.o redirect.o execute.o
-	$(CC) $(CFLAGS) main.c parse.o redirect.o execute.o -o ssll
+	$(CC) $(CFLAGS) $(LDFLAGS) main.c parse.o redirect.o execute.o -o ssll
 	$(STRIP) ssll
 
 parse.o: main.h parse.h parse.c
