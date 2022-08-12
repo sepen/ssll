@@ -1,11 +1,11 @@
 #include "main.h"
 #include "parse.h"
 
-char line[MAX_LINE + 1];
+char parseline[MAX_LINE + 1];
 char avline[MAX_LINE + 1];
 
 char *lineptr;
-char *avptr = avline ;
+char *avptr = avline;
 
 CMD cmd;
 
@@ -28,7 +28,7 @@ int check(char *ptr);
 void getname(char *name);
 
 
-CMD *parse (char *s)
+CMD *parse(char *s)
 {
     int i, charok, cmdok;
    
@@ -63,7 +63,7 @@ CMD *parse (char *s)
     if (cmd.cmd_count==0) return (&cmd);
  
     fprintf(stderr,PROMPT);
-    charok=lineptr-line;
+    charok = lineptr - parseline;
     for(i=0; i<charok; i++) fprintf(stderr," ");
     fprintf(stderr,"^ unexpected.\n");
         
@@ -83,7 +83,7 @@ void parse_ini(void)
 {
     int i,j;
 
-    avptr=avline;
+    avptr = avline;
    
     for(i=0; i<PIPELINE; i++)
         for(j=0; j<MAX_ARG; j++) cmd.args[i][j]=NULL;
@@ -97,14 +97,13 @@ void parse_ini(void)
     errnum=0;
 }
 
-
 int command_line(int i)
 {
     int j, flag, inword=FALSE, incmd=FALSE;
   
     cmd.args_counts[i]=0;
     for(j=0; j<MAX_ARG-1; ++j) {
-        while(*lineptr==' ' || *lineptr=='\t')  ++lineptr;
+        while(*lineptr==' ' || *lineptr=='\t') ++lineptr;
       
         cmd.args[i][j] = avptr;
         cmd.args[i][j+1] = NULL;
@@ -170,17 +169,17 @@ void getname(char *name)
         case '&':
         case '\n':
         case '\t':
-                *name = '\0';
-                return;
+            *name = '\0';
+            return;
         default:
-                *name++ = *lineptr++;
-                break;
+            *name++ = *lineptr++;
+            break;
        }
        *name = '\0';
-   }
+    }
 }
 
-char *syntax_error ()
+char *syntax_error()
 {
     return errstr[errnum];
 }
