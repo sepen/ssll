@@ -1,6 +1,7 @@
 #include "main.h"
 #include "redirect.h"
 #include "execute.h"
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -8,77 +9,70 @@
 
 struct sigaction act;
 
-int execute(CMD * ordenes, CMD_FD *pipefd)
+int execute(CMD * cmd, CMD_FD *pipefd)
 {
 	int i, lastpid;
 	
-	// senyales
-	if (ordenes->flag_background)
+	// signals
+	if (cmd->flag_background)
 		act.sa_handler = SIG_IGN;
 	else
 		act.sa_handler = SIG_DFL;
 	
 	sigaction(SIGCHLD, &act, NULL);
-	
-	// comprobar si se lanza en 
-	// 	-primer plano:	El shell tendra que ir esperando a que los procesos hijos vayan terminando, 
-	// 			hasta que lo haga el que aparec�a como ultima orden de la linea. 
-	// 	-segundo plano: El shell no tiene por que esperar a que termine ninguno de los procesos creados.
-	// 			Ya puede presentar el prompt y leer la siguiente orden de inmediato.
+
+	// check if is launched in
+	// - foreground: the command should wait until the last child in the pipeline
+	// - background: the command shouldn't wait to anything, it can give you a prompt and read a newline
 	//
 	
-	// creacion en cadena de los procesos hijos
-	//	ej: "awk | grep | ls"
-	//	- 'ssll'  crea el proceso 'awk'
-	//	- 'awk'  crea el proceso 'grep'
-	//	- 'grep' crea el proceso 'ls'
-	//
-	// tratamiento de las redirectes
-	// 
-	// execute la orden
+	// each process creates a child
+	// e.g: "ps | grep | awk"
+	// - 'ssll' creates process 'ps'
+	// - 'grep' creates process 'grep'
+	// - 'awk'  creates process 'awk'
+
 	
-	for (i=0; i<(ordenes->cmd_count); ++i){
+	for (i=0; i<(cmd->cmd_count); ++i){
 		if ( (lastpid = fork()) ) {
-			// *********** PADRE *****************************
-			// para cada hijo (orden a execute)
-			if (ordenes->flag_background) fprintf(stdout, "[%d]\n", lastpid);
+			// --- parent ---
+			// for each child
+			if (cmd->flag_background) fprintf(stdout, "[%d]\n", lastpid);
 		}
 		else {
-			// *********** HIJO ******************************
-			// redirect de entrada
+			// --- children ---
+			// input redirection
 			if ((*pipefd)[i].fd_in != 0) {
 				close(0);
 				dup((*pipefd)[i].fd_in);
 			}
-			// redirect de salida
+			// output redirection
 			if ((*pipefd)[i].fd_out != 1) {
 				close(1);
 				dup((*pipefd)[i].fd_out);
 			}
-			// por si acaso cerrramos los descriptores sobrantes
-			cerrar_fd();
+			// we close the other file descriptors just in case
+			close_fd();
 			
 			// background
-			if (!ordenes->flag_background) {
+			if (!cmd->flag_background) {
 			        act.sa_handler = SIG_DFL;
 				sigaction(SIGINT, &act, NULL);
 				sigaction(SIGQUIT, &act, NULL);
 			}
 						
-			// ejecutamos la orden
-			if (execvp(ordenes->args[i][0], ordenes->args[i]) == -1) {
-				fprintf(stderr, "%s: command not found\n", ordenes->args[i][0]);
+			// execute the command
+			if (execvp(cmd->args[i][0], cmd->args[i]) == -1) {
+				fprintf(stderr, "%s: command not found\n", cmd->args[i][0]);
 				exit(1);
 			}
 		}
 	}
-	// *********** PADRE *****************************
-	// por si acaso cerrramos los descriptores sobrantes
-	cerrar_fd();
-	// esperamos la terminacion del ultimo hijo
-	// NOTA: podrian quedar zombies con lo que habria que añadir
-	// 	 algun mecanismo para evitarlo
-	//wait(NULL) != lastpid;
-	wait(NULL);
+	// --- parent ---
+	// we close the other file descriptors just in case
+	close_fd();
+	// wait for the last child to terminate
+	// TODO: detect zombies
+	while ( (wait(NULL) != lastpid) );
 	return TRUE;      
 }
