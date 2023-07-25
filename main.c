@@ -82,7 +82,8 @@ char * get_newline(void)
 
 // Main function
 //
-// - Read from external input (non-interactive mode) or loop for each newline from user (interactive mode)
+// - Read from external input (non-interactive mode)
+//   or loop for each newline from user (interactive mode)
 // - Execute the command
 int main(int argc, char * argv[])
 {

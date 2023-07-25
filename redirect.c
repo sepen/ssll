@@ -8,8 +8,8 @@ CMD_FD cmdfd;
 int nproc, mxfd;
 
 void redirect_ini(void);
-int r_entrada(char *s);
-int r_salida(char *s, int append);
+int r_input(char *s);
+int r_output(char *s, int append);
 
 CMD_FD * pipeline(CMD * cmd)
 {
@@ -17,13 +17,13 @@ CMD_FD * pipeline(CMD * cmd)
 
     redirect_ini();
     nproc=cmd->cmd_count;
-    r_entrada(cmd->file_in);
-    r_salida(cmd->file_out, cmd->flag_append);
+    r_input(cmd->file_in);
+    r_output(cmd->file_out, cmd->flag_append);
 
     for (i=0; i<nproc-1; ++i){
 
-        if (pipe(fds) == -1) {  /* crear un tubo */
-            fprintf(stderr, "ssll: error al intentar crear un pipe\n");
+        if (pipe(fds) == -1) {  /* pipe */
+            fprintf(stderr, "ssll: failed to create pipe\n");
             return FALSE ;
         }
         cmdfd[i].fd_out=fds[1];
@@ -55,7 +55,7 @@ void redirect_ini()
   mxfd=3;
 }
 
-int r_entrada(char *s)
+int r_input(char *s)
 {
   int fd;
 
@@ -70,7 +70,7 @@ int r_entrada(char *s)
   return(OK);
 }
 
-int r_salida(char *s, int append)
+int r_output(char *s, int append)
 {
   int fd;
 

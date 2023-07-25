@@ -13,7 +13,7 @@
 #define FALSE 0
 #define OK 1
 #define ERROR 0
-#define MSG_WELCOME "SepenShell (ssll) 2002-2021\nPress Ctrl+D to exit\n\n"
+#define MSG_WELCOME "ssll v1.0\nPress Ctrl+D to exit\n\n"
 #define MSG_ERROR "\nUnknown error"
 #define PROMPT "\033[1;34m[\033[1;36mssll\033[1;34m]>\033[0m "
 #define MAX_LINE 200
