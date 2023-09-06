@@ -60,18 +60,18 @@ char * get_newline(void)
   // Read line char by char until \n appears
   for (i=0; (line[i] = getchar()) != '\n' && line[i] != EOF && i<MAX_LINE; ++i);
 
-  // Perform some checks
+  // Received Ctrl+D so no input was given
   if (line[i] == EOF ) {
-    fprintf(stderr, "\nERROR: line[i] == EOF\n");
+    fprintf(stdout, "\nExiting ...\n");
     clearerr(stdin);
-    //exit(0);
-    return(line);
+    exit(0);
   }
-  if (i == MAX_LINE) {
-    fprintf(stderr, "\nERROR: line equal to MAX_LINE\n");
+
+  // MAX_LINE limit reached
+  if (i==MAX_LINE) {
+    fprintf(stderr, "\nToo long line\n");
     clearerr(stdin);
-    //exit(0);
-    return(line);
+    i=-1;
   }
 
   // Append \0 at the end of the line
@@ -97,7 +97,8 @@ int main(int argc, char * argv[])
   sigaction(SIGTTIN, &act, NULL);  /* background process trying to write */
 
   // Welcome message
-  printf(MSG_WELCOME);
+  // TODO: show welcome message if arg is passed (or in ~/.ssllrc)
+  //printf(MSG_WELCOME);
 
   // Non-interactive mode
   //
@@ -122,8 +123,18 @@ int main(int argc, char * argv[])
 
       // parse the line
       if ((command = parse(newline)) != NULL) {
+
         // get file descriptors for possible redirection
         pipe_fd = pipeline(command);
+
+        // execute built-in command
+        if (strcmp(command->args[0][0], BUILTINCMD_EXIT) == 0) {
+          fprintf(stdout, "Exiting ...\n");
+          exit(0);
+        }
+        // TODO: other built-in commands
+        // TODO: variables before a command
+
         // execute the command with file descriptors from above
         execute(command, pipe_fd);
       } 

@@ -13,13 +13,21 @@
 #define FALSE 0
 #define OK 1
 #define ERROR 0
-#define MSG_WELCOME "ssll v1.0\nPress Ctrl+D to exit\n\n"
-#define MSG_ERROR "\nUnknown error"
-#define PROMPT "\033[1;34m[\033[1;36mssll\033[1;34m]>\033[0m "
+
+#define MSG_WELCOME "-----------------------------------\n\033[1;34mssll v1.0\033[1;36m\n01110011 01110011 01101100 01101100\033[0m\n-----------------------------------\n"
+#define PROMPT "ssll-1.0$ "
+//#define PROMPT "\033[1;34m[\033[1;36mssll\033[1;34m]>\033[0m "
+
+#define PIPELINE 10
+
 #define MAX_LINE 200
 #define MAX_ARG 20
-#define PIPELINE 10
 #define MAX_NAME 100
+
+#define BUILTINCMD_EXIT "exit"
+//#define BUILTINCMD_CD "cd"
+//#define BUILTINCMD_ALIAS "alias"
+//#define BUILTINCMD_HISTORY "history"
 
 typedef struct
 {

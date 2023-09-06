@@ -64,7 +64,7 @@ int execute(CMD * cmd, CMD_FD *pipefd)
 			// execute the command
 			if (execvp(cmd->args[i][0], cmd->args[i]) == -1) {
 				fprintf(stderr, "%s: command not found\n", cmd->args[i][0]);
-				exit(1);
+				return(1);
 			}
 		}
 	}
@@ -74,5 +74,5 @@ int execute(CMD * cmd, CMD_FD *pipefd)
 	// wait for the last child to terminate
 	// TODO: detect zombies
 	while ( (wait(NULL) != lastpid) );
-	return TRUE;      
+	return(0);
 }
