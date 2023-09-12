@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-struct sigaction act;
+struct sigaction sa_act;
 
 int execute(CMD * cmd, CMD_FD *pipefd)
 {
@@ -15,11 +15,11 @@ int execute(CMD * cmd, CMD_FD *pipefd)
 	
 	// signals
 	if (cmd->flag_background)
-		act.sa_handler = SIG_IGN;
+		sa_act.sa_handler = SIG_IGN;
 	else
-		act.sa_handler = SIG_DFL;
+		sa_act.sa_handler = SIG_DFL;
 	
-	sigaction(SIGCHLD, &act, NULL);
+	sigaction(SIGCHLD, &sa_act, NULL);
 
 	// check if is launched in
 	// - foreground: the command should wait until the last child in the pipeline
@@ -56,9 +56,9 @@ int execute(CMD * cmd, CMD_FD *pipefd)
 			
 			// background
 			if (!cmd->flag_background) {
-			        act.sa_handler = SIG_DFL;
-				sigaction(SIGINT, &act, NULL);
-				sigaction(SIGQUIT, &act, NULL);
+			        sa_act.sa_handler = SIG_DFL;
+				sigaction(SIGINT, &sa_act, NULL);
+				sigaction(SIGQUIT, &sa_act, NULL);
 			}
 						
 			// execute the command
