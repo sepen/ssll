@@ -1,7 +1,7 @@
 # `ssll`
 
 A lightweight pure C implementation of a Unix-like system emulating the Bourne Again SHell. \
-The code was originally developed for the SO2 course (Operating Systems II) of my degree around 2002 and has been rescued to make it work with the current libraries and compilation tools.
+The code was originally developed for the SO2 course (Operating Systems II) of my degree around 2002 and has been rescued to make it work with actual libraries and compilation tools.
 
 ![Last Commit](https://img.shields.io/github/last-commit/sepen/ssll)
 ![Repo Size](https://img.shields.io/github/repo-size/sepen/ssll)
