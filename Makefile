@@ -1,23 +1,27 @@
 
-CFLAGS = -Wall -O2
+TARGET = ssll
+STRIP = strip
+LIBS =
+CC = gcc
+CFLAGS = -O2 -pipe
 
-CC=gcc
-STRIP=strip
+.PHONY: default all clean
 
-all: clean ssll
+default: $(TARGET)
+all: default
 
-ssll: main.c main.h parse.h redirect.h execute.h parse.o redirect.o execute.o
-	$(CC) $(CFLAGS) $(LDFLAGS) main.c parse.o redirect.o execute.o -o ssll
+OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
+HEADERS = $(wildcard *.h)
+
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.PRECIOUS: $(TARGET) $(OBJECTS)
+
+$(TARGET): $(OBJECTS)
+	$(CC)  $(OBJECTS) -Wall $(LIBS) -o $@
 	$(STRIP) ssll
 
-parse.o: main.h parse.h parse.c
-	$(CC) -c $(CFLAGS) parse.c
-
-redirect.o: main.h redirect.h redirect.c
-	$(CC) -c $(CFLAGS) redirect.c
-
-execute.o: main.h execute.h execute.c
-	$(CC) -c $(CFLAGS) execute.c
-
 clean:
-	@rm -vf *.o main
+	rm -f $(OBJECTS)
+	rm -f ssll
