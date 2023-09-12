@@ -1,7 +1,7 @@
 # `ssll`
 
-`s`epen `s`he`ll` was a project required for SO2 (Operative System II) course at my University
- (https://www.upv.es) in 2002.
+A lightweight command-line shell implemented in pure C that focuses on size. \
+Originally the code was developed for the course SO2 (Operating Systems II) of my degree around 2002 and has been rescued to make it work with the current libraries and compilation tools.
 
 ![Last Commit](https://img.shields.io/github/last-commit/sepen/ssll)
 ![Repo Size](https://img.shields.io/github/repo-size/sepen/ssll)
