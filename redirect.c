@@ -21,7 +21,6 @@ CMD_FD * pipeline(CMD * cmd)
     r_output(cmd->file_out, cmd->flag_append);
 
     for (i=0; i<nproc-1; ++i){
-
         if (pipe(fds) == -1) {  /* pipe */
             fprintf(stderr, "ssll: failed to create pipe\n");
             return FALSE ;
@@ -40,14 +39,17 @@ int close_fd()
 {
   int i;
 
-  for (i=3;i<=mxfd;i++) close(i);
+  for (i=3; i<=mxfd; ++i) {
+    close(i);
+  }
   return OK;
 }
 
 void redirect_ini()
 {
   int i;
-  for (i=0; i<PIPELINE; i++){
+
+  for (i=0; i<PIPELINE-1; ++i) {
     cmdfd[i].fd_in=0;
     cmdfd[i].fd_out=1;
   }
