@@ -6,6 +6,7 @@ The code was originally developed for the SO2 course (Operating Systems II) of m
 ![Last Commit](https://img.shields.io/github/last-commit/sepen/ssll)
 ![Repo Size](https://img.shields.io/github/repo-size/sepen/ssll)
 ![Code Size](https://img.shields.io/github/languages/code-size/sepen/ssll)
+![Written in c](https://img.shields.io/badge/written%20in-c-ff69b4)
 
 What features does it have:
 
